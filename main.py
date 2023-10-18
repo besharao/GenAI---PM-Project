@@ -186,3 +186,37 @@ def get_open_form_by_type():
 
 #Calling the function
 #get_open_form_by_type()
+
+#-----------------------------------------------------------------------------------
+
+#QUESTION EIGHT
+def get_time_series_plot():
+	# Load Construction_Data_PM_Forms_All_Projects.csv into a DataFrame
+	forms_df = pd.read_csv('Construction_Data_PM_Forms_All_Projects.csv')
+
+	# Filter forms for currently open status
+	open_forms = forms_df[forms_df['Report Forms Status'] == 'Open']
+
+	# Convert 'Status Changed' column to datetime objects
+	open_forms['Status Changed'] = pd.to_datetime(open_forms['Status Changed'], errors='coerce')
+
+	# Group open forms by 'Report Forms Group' and 'Status Changed' date, count occurrences
+	forms_time_series = open_forms.groupby(['Status Changed', 'Report Forms Group']).size().unstack(fill_value=0)
+
+	# Plotting the time series plot with straightforward lines
+	forms_time_series.plot(kind='line', figsize=(15, 8), marker='o', linestyle='-')
+
+	# Adding labels and title
+	plt.xlabel('Date')
+	plt.ylabel('Number of Open Forms')
+	plt.title('Time Series Plot of Open Forms by Report Form Group')
+
+	# Adding legend
+	plt.legend(title='Report Form Group', bbox_to_anchor=(1, 1), loc='upper left')
+
+	# Show the time series plot
+	plt.show()
+	return get_time_series_plot
+
+#Calling the function
+#get_time_series_plot()
