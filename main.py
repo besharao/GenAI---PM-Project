@@ -197,11 +197,11 @@ def get_time_series_plot():
 	# Filter forms for currently open status
 	open_forms = forms_df[forms_df['Report Forms Status'] == 'Open']
 
-	# Convert 'Status Changed' column to datetime objects
-	open_forms['Status Changed'] = pd.to_datetime(open_forms['Status Changed'], errors='coerce')
+	# Convert 'Created' column to datetime objects
+	open_forms['Created'] = pd.to_datetime(open_forms['Created'], errors='coerce')
 
-	# Group open forms by 'Report Forms Group' and 'Status Changed' date, count occurrences
-	forms_time_series = open_forms.groupby(['Status Changed', 'Report Forms Group']).size().unstack(fill_value=0)
+	# Group open forms by 'Report Forms Group' and 'Created' date, count occurrences
+	forms_time_series = open_forms.groupby(['Created', 'Report Forms Group']).size().unstack(fill_value=0)
 
 	# Plotting the time series plot with straightforward lines
 	forms_time_series.plot(kind='line', figsize=(15, 8), marker='o', linestyle='-')
@@ -216,7 +216,6 @@ def get_time_series_plot():
 
 	# Show the time series plot
 	plt.show()
-	return get_time_series_plot
 
 #Calling the function
-#get_time_series_plot()
+get_time_series_plot()
