@@ -1,6 +1,6 @@
 import pandas as pd
 import matplotlib.pyplot as plt
-
+from datetime import datetime
 
 #QUESTION ONE
 def get_overdue_tasks():
@@ -109,7 +109,6 @@ def get_overdue_by_project():
 #-----------------------------------------------------------------------------------
 
 #QUESTION FIVE
-
 def get_percentage_overdue():
 	# Load Construction_Data_PM_Tasks_All_Projects.csv into a DataFrame
 	tasks_df = pd.read_csv('Construction_Data_PM_Tasks_All_Projects.csv')
@@ -138,21 +137,52 @@ def get_percentage_overdue():
 #-----------------------------------------------------------------------------------
 
 #QUESTION SIX
-from datetime import datetime
+def get_mean_days_elapsed():
+	# Load Construction_Data_PM_Forms_All_Projects.csv into a DataFrame
+	forms_df = pd.read_csv('Construction_Data_PM_Forms_All_Projects.csv')
 
-# Load Construction_Data_PM_Forms_All_Projects.csv into a DataFrame
-forms_df = pd.read_csv('Construction_Data_PM_Forms_All_Projects.csv')
+	# Convert 'Created' and 'Status Changed' columns to datetime objects
+	forms_df['Created'] = pd.to_datetime(forms_df['Created'], errors='coerce')
+	forms_df['Status Changed'] = pd.to_datetime(forms_df['Status Changed'], errors='coerce')
 
-# Convert 'Created' and 'Status Changed' columns to datetime objects
-forms_df['Created'] = pd.to_datetime(forms_df['Created'], errors='coerce')
-forms_df['Status Changed'] = pd.to_datetime(forms_df['Status Changed'], errors='coerce')
+	# Calculate the number of days elapsed since forms were opened
+	forms_df['DaysElapsed'] = (forms_df['Status Changed'] - forms_df['Created']).dt.days
 
-# Calculate the number of days elapsed since forms were opened
-forms_df['DaysElapsed'] = (forms_df['Status Changed'] - forms_df['Created']).dt.days
+	# Group forms by 'Project' and calculate the mean number of days elapsed
+	mean_days_elapsed_by_project = forms_df.groupby('Project')['DaysElapsed'].mean()
 
-# Group forms by 'Project' and calculate the mean number of days elapsed
-mean_days_elapsed_by_project = forms_df.groupby('Project')['DaysElapsed'].mean()
+	# Print the mean number of days elapsed by project
+	print("Mean Number of Days Elapsed Since Forms Were Opened by Project:")
+	print(mean_days_elapsed_by_project)
+	return get_mean_days_elapsed
 
-# Print the mean number of days elapsed by project
-print("Mean Number of Days Elapsed Since Forms Were Opened by Project:")
-print(mean_days_elapsed_by_project)
+#Calling the function
+#get_mean_days_elapsed()
+
+#-----------------------------------------------------------------------------------
+
+#QUESTION SEVEN
+def get_open_form_by_type():
+	# Load Construction_Data_PM_Forms_All_Projects.csv into a DataFrame
+	forms_df = pd.read_csv('Construction_Data_PM_Forms_All_Projects.csv')
+
+	# Filter forms for open status
+	open_forms = forms_df[forms_df['Report Forms Status'] == 'Open']
+
+	# Group open forms by 'Type' and count the occurrences
+	open_forms_by_type = open_forms.groupby('Type').size()
+
+	# Plotting the bar chart
+	open_forms_by_type.plot(kind='bar', figsize=(12, 6), color='green')
+
+	# Adding labels and title
+	plt.xlabel('Type of Form')
+	plt.ylabel('Number of Open Forms')
+	plt.title('Number of Open Forms by Type of Form')
+
+	# Show the bar chart
+	plt.show()
+	return get_open_form_by_type
+
+#Calling the function
+#get_open_form_by_type()
